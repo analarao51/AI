@@ -1,15 +1,14 @@
 def check_winner(board, player):
-    # Check rows
     for row in board:
         if all([cell == player for cell in row]):
             return True
     
-    # Check columns
+
     for col in range(3):
         if all([board[row][col] == player for row in range(3)]):
             return True
     
-    # Check diagonals
+
     if all([board[i][i] == player for i in range(3)]):
         return True
     if all([board[i][2-i] == player for i in range(3)]):
@@ -50,7 +49,7 @@ def tic_tac_toe(moves):
     
     return "Pending"
 
-# Test example
+
 moves = [(0, 0), (0, 1), (0, 2), (1, 1), (2, 0), (1, 0), (1, 2), (2, 2), (2, 1)]
 result = tic_tac_toe(moves)
-print(result)  # Output: "Draw"
+print(result)  
