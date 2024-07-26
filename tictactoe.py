@@ -1,55 +1,52 @@
-def check_winner(board, player):
-    for row in board:
-        if all([cell == player for cell in row]):
+def nextMove(player, board):
+    def is_winner(b, p):
+        # Check rows, columns, and diagonals for a winning move
+        for i in range(3):
+            if all(b[i][j] == p for j in range(3)):  # Check row
+                return True
+            if all(b[j][i] == p for j in range(3)):  # Check column
+                return True
+        if all(b[i][i] == p for i in range(3)):      # Check main diagonal
             return True
-    
-
-    for col in range(3):
-        if all([board[row][col] == player for row in range(3)]):
+        if all(b[i][2 - i] == p for i in range(3)):  # Check anti-diagonal
             return True
-    
+        return False
 
-    if all([board[i][i] == player for i in range(3)]):
-        return True
-    if all([board[i][2-i] == player for i in range(3)]):
-        return True
-    
-    return False
+    def find_winning_move(b, p):
+        for r in range(3):
+            for c in range(3):
+                if b[r][c] == '_':
+                    b[r][c] = p
+                    if is_winner(b, p):
+                        b[r][c] = '_'  # Reset the move
+                        return r, c
+                    b[r][c] = '_'  # Reset the move
+        return None
 
-def check_draw(board):
-    for row in board:
-        for cell in row:
-            if cell == '_':
-                return False
-    return True
+    # Check for a winning move for the player
+    winning_move = find_winning_move(board, player)
+    if winning_move:
+        print(f"{winning_move[0]} {winning_move[1]}")
+        return
 
-def print_board(board):
-    for row in board:
-        print(" ".join(row))
-    print()
+    # Check for a winning move for the opponent and block it
+    opponent = 'O' if player == 'X' else 'X'
+    blocking_move = find_winning_move(board, opponent)
+    if blocking_move:
+        print(f"{blocking_move[0]} {blocking_move[1]}")
+        return
 
-def tic_tac_toe(moves):
-    board = [['_', '_', '_'], ['_', '_', '_'], ['_', '_', '_']]
-    player = 'X'
-    
-    for move in moves:
-        row, col = move
-        if board[row][col] == '_':
-            board[row][col] = player
-        else:
-            raise ValueError("Invalid move")
-        
-        if check_winner(board, player):
-            return player
-        
-        player = 'O' if player == 'X' else 'X'
-    
-    if check_draw(board):
-        return "Draw"
-    
-    return "Pending"
+    # Make the first available move
+    for r in range(3):
+        for c in range(3):
+            if board[r][c] == '_':
+                print(f"{r} {c}")
+                return
 
+# Input handling
+player = input().strip()
+board = []
+for _ in range(3):
+    board.append(list(input().strip()))
 
-moves = [(0, 0), (0, 1), (0, 2), (1, 1), (2, 0), (1, 0), (1, 2), (2, 2), (2, 1)]
-result = tic_tac_toe(moves)
-print(result)  
+nextMove(player, board)
